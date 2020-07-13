@@ -1,0 +1,25 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  height: 0;
+}
+
+html, body {
+  width: 100%;
+  height:100%;
+}
+
+body {
+  min-width: 100vh;
+  background: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+canvas {
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}

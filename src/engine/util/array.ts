@@ -1,0 +1,1 @@
+export const range = (n: number, m: number): number[] => Array.apply(null, Array(m - n)).map((_, i) => n + i)
