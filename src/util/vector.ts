@@ -1,19 +1,19 @@
-export type IVector2 = {
-  x: number
-  y: number
-}
-
-class Vector2 implements IVector2 {
+class Vector2 {
   x: number
   y: number
 
   constructor(x: number, y: number) {
+    this.set(x, y)
+  }
+
+  set(x: number, y: number) {
     this.x = x
     this.y = y
   }
 
-  public get() {
-    return { x: this.x, y: this.y }
+  clear() {
+    this.x = 0
+    this.y = 0
   }
 
   toString() {
