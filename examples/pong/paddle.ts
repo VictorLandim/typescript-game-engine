@@ -1,13 +1,14 @@
-import { Entity, Vector2, ShapeRenderer, EventManager, Rect } from '../../src/index'
+import { Entity, Vector2, ShapeRenderer, Rect } from '../../src'
+import { PADDLE_SPEED } from './const'
 
 class Paddle extends Entity {
   position: Vector2
-  speed: number = 0.5
+  speed: number = PADDLE_SPEED
   size: Vector2
   bounds: Rect
 
-  constructor(x: number, y: number, w: number, h: number) {
-    super('Paddle')
+  constructor(id: string, x: number, y: number, w: number, h: number) {
+    super(id)
 
     this.position = new Vector2(x, y)
     this.size = new Vector2(w, h)
@@ -32,4 +33,4 @@ class Paddle extends Entity {
 
 }
 
-export default Paddle;
+export { Paddle }

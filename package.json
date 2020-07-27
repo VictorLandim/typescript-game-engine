@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "rm -rf .parcel-cache && parcel public/index.html",
+    "pong": "rm -rf .parcel-cache && parcel examples/pong/index.html",
+    "asteroids": "rm -rf .parcel-cache && parcel examples/asteroids/index.html",
     "build": "parcel build public/index.html"
   },
   "devDependencies": {

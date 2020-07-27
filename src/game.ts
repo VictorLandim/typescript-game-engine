@@ -1,24 +1,26 @@
 import { Screen } from "./screen"
 import { Canvas } from "./canvas"
+import { Renderer } from "./renderer"
 
 export type GameConfig = {
   fps?: number
   clearColor: string
-  width: number
-  height: number
-  screens: Screen[]
+  screenWidth: number
+  screenHeight: number
+  virtualWidth: number
+  virtualHeight: number
 }
 
 const DEFAULT_CONFIG: GameConfig = {
   fps: 60,
   clearColor: '#222',
-  width: 600,
-  height: 600,
-  screens: []
+  screenWidth: 500,
+  screenHeight: 500,
+  virtualWidth: 5,
+  virtualHeight: 5
 }
-
 class Game {
-  protected ctx: CanvasRenderingContext2D
+  renderer: Renderer
 
   protected screens: Screen[] = []
   protected screenIndex = 0
@@ -28,11 +30,17 @@ class Game {
 
   protected fps = 0
 
-  constructor(config: GameConfig = DEFAULT_CONFIG, canvas: Canvas) {
+  constructor(config: GameConfig = DEFAULT_CONFIG) {
     this.config = config
-    this.screens = this.config.screens
+    this.screens = []
     this.screenIndex = 0
-    this.ctx = canvas.ctx
+
+    this.renderer = new Renderer(
+      this.config.virtualWidth,
+      this.config.virtualHeight,
+      this.config.screenWidth,
+      this.config.screenHeight
+    )
   }
 
   loop = (timestamp: number) => {
@@ -45,7 +53,7 @@ class Game {
     this.fps = 1000 / delta
 
     this.update(delta)
-    this.draw(this.ctx)
+    this.draw(this.renderer.ctx)
 
     // }
 
@@ -59,25 +67,32 @@ class Game {
   }
 
   clear(ctx: CanvasRenderingContext2D) {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
     ctx.fillStyle = this.config.clearColor
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+    ctx.clearRect(0, 0, this.renderer.virtual_width, this.renderer.virtual_height)
+    ctx.fillRect(0, 0, this.renderer.virtual_width, this.renderer.virtual_height)
   }
 
   draw(ctx: CanvasRenderingContext2D) {
     if (!!this.screens[this.screenIndex]) {
-      this.clear(this.ctx)
+      this.renderer.applyDefaultTransformation()
+      this.clear(this.renderer.ctx)
       this.screens[this.screenIndex].draw(ctx)
     }
   }
 
   setScreen(id: string) {
-    // const foundScreen = this.screens.findIndex(screen => screen.id === id)
-    // if (!foundScreen) {
-    //   throw new Error(`Can't find screen with id ${id}`)
-    // }
+    const foundScreenIndex = this.screens.findIndex(screen => screen.id === id)
 
-    // this.screenIndex = foundScreen
+    if (foundScreenIndex === -1) {
+      throw new Error(`Can't find screen with id ${id}`)
+    }
+
+    this.screenIndex = foundScreenIndex
+  }
+
+  addScreen(screen: Screen): this {
+    this.screens.push(screen)
+    return this
   }
 }
 

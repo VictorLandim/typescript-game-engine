@@ -1,13 +1,13 @@
-import { ShapeRenderer } from "./shapeRenderer";
-import { Circle } from "./shape";
-import { Vector2, clamp } from "./util/index";
-import { Poolable } from "./pool";
+import { ShapeRenderer } from "./shapeRenderer"
+import { Circle } from "./shape"
+import { Vector2, clamp } from "./util/index"
+import { Poolable } from "./pool"
 
 class Particle implements Poolable {
   private timer = 0
   private lifeSpan: number
   private bounds: Circle
-  private velocity: Vector2
+  velocity: Vector2
   shouldRemove = false
 
   constructor(lifeSpan: number, size: number, position: Vector2, velocity: Vector2) {
@@ -43,10 +43,12 @@ class Particle implements Poolable {
   draw(ctx: CanvasRenderingContext2D): void {
     const progress = this.timer / this.lifeSpan
 
-    ctx.save()
+    const oldGlobalAlpha = ctx.globalAlpha
+
     ctx.globalAlpha = clamp(1 - progress, 0, 1)
     ShapeRenderer.circle(ctx, this.bounds)
-    ctx.restore()
+
+    ctx.globalAlpha = oldGlobalAlpha
   }
 
 }

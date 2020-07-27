@@ -10,7 +10,7 @@ abstract class Entity {
   onMouseUp?: () => void
 
   constructor(id: string) {
-    this.id = id;
+    this.id = id
     this.events = new EventManager()
   }
 

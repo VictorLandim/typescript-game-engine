@@ -15,7 +15,7 @@ const rectCircle = (rect: Rect, circle: Circle) => {
   if (dx > circle.radius || dy > circle.radius) return false
   if (dx <= 0 || dy <= 0) return true
 
-  return (dx * dx + dy * dy <= circle.radius * circle.radius);
+  return (dx * dx + dy * dy <= circle.radius * circle.radius)
 
 }
 

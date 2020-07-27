@@ -11,7 +11,7 @@ class ShapeRenderer {
       circle.radius, circle.radius,
       0,
       0, 2 * Math.PI,
-    );
+    )
     ctx.fill()
 
     if (debug) {

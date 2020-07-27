@@ -2,27 +2,27 @@ import { Particle } from './particle'
 import { range, Vector2, randomf } from './util/index'
 import { Pool } from './pool'
 
-type EmitterConfig = {
-  x: number;
-  y: number;
-  xOffset: number;
-  yOffset: number;
-  size: number;
-  frequency: number;
-  gravity: number;
-  lifespan: number;
-  quantity: number;
-  speed: number;
+export type EmitterConfig = {
+  x: number
+  y: number
+  xOffset: number
+  yOffset: number
+  size: number
+  frequency: number
+  gravity: number
+  lifespan: number
+  quantity: number
+  speed: number
 }
 
 class ParticleEmitter {
   private particles: Particle[] = []
   private pool: Pool<Particle> = new Pool()
-  private config: EmitterConfig
   private timer = 0
+  config: EmitterConfig
 
   constructor(config: EmitterConfig) {
-    this.config = config;
+    this.config = config
 
     this.createParticles()
   }
@@ -74,11 +74,12 @@ class ParticleEmitter {
 
     this.particles = this.particles.filter(particle => {
       particle.update(delta)
+      particle.velocity.y += this.config.gravity
 
       const { shouldRemove } = particle
 
       if (particle.shouldRemove) {
-        this.pool.add(particle); // updates items `shouldRemove`
+        this.pool.add(particle)       // updates items `shouldRemove`
       }
 
       return !shouldRemove
@@ -92,6 +93,10 @@ class ParticleEmitter {
 
   draw(ctx: CanvasRenderingContext2D): void {
     this.particles.forEach(particle => particle.draw(ctx))
+  }
+
+  clear() {
+    this.particles = []
   }
 }
 

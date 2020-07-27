@@ -36,6 +36,12 @@ class Canvas {
     } else {
       throw new Error('Could not append game to document body.')
     }
+
+    document.addEventListener('resize', this.resize)
+  }
+
+  resize() {
+
   }
 }
 
