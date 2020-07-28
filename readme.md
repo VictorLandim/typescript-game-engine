@@ -7,7 +7,7 @@ Check out `examples` folder for demo games created with the engine.
 
 # Features
 - Rendering and game loop
-- World units kept separate from screen units
+- World units !== screen units
 - Input handling
 - Event handling
 - Object pooling

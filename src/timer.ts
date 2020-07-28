@@ -9,6 +9,7 @@ class Timer extends Entity {
 
   constructor(id: string, maxTime: number, repeat: boolean, callback: () => void) {
     super(id)
+    this.counter = 0
     this.maxTime = maxTime
     this.repeat = repeat
     this.callback = callback

@@ -4,11 +4,12 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "pong": "rm -rf .parcel-cache && parcel examples/pong/index.html",
+    "pong": "rm -rf .parcel-cache && parcel examples/pong/index.html --open",
     "asteroids": "rm -rf .parcel-cache && parcel examples/asteroids/index.html",
     "build": "parcel build public/index.html"
   },
   "devDependencies": {
-    "parcel": "^2.0.0-beta.1"
+    "parcel": "^2.0.0-beta.1",
+    "serve": "^11.3.2"
   }
 }

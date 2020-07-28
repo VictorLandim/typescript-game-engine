@@ -1,4 +1,4 @@
-import { Screen, Game, Timer } from "../../src"
+import { Screen, Game, Timer, AssetManager } from "../../src"
 
 class StartScreen extends Screen {
   gameWidth: number
@@ -18,11 +18,23 @@ class StartScreen extends Screen {
     })
 
     this.addEntity(this.textTimer)
+
+    AssetManager.loadAudio('click', 'click2.wav')
   }
 
-  update(delta: number) {
+  async update(delta: number) {
+    this.textTimer.update(delta)
+
     if (this.input.isMouseClicked()) {
       this.game.setScreen('PlayScreen')
+
+      try {
+        console.log(AssetManager.assets)
+
+        await AssetManager.get<HTMLAudioElement>('click').play()
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 
