@@ -1,4 +1,5 @@
-import { Screen, Game, Timer, AssetManager } from "../../src"
+import { Screen, Game, Timer, AssetManager } from '../../engine'
+import { clickAudio, downloadImage } from './assetPaths'
 
 class StartScreen extends Screen {
   gameWidth: number
@@ -9,9 +10,11 @@ class StartScreen extends Screen {
 
   constructor(id: string, game: Game) {
     super(id, game)
+  }
 
-    this.gameWidth = game.renderer.virtual_width
-    this.gameHeight = game.renderer.virtual_height
+  init() {
+    this.gameWidth = this.game.renderer.virtual_width
+    this.gameHeight = this.game.renderer.virtual_height
 
     this.textTimer = new Timer('textTimer', 500, true, () => {
       this.showText = !this.showText
@@ -19,22 +22,18 @@ class StartScreen extends Screen {
 
     this.addEntity(this.textTimer)
 
-    AssetManager.loadAudio('click', 'click2.wav')
+    AssetManager
+      .loadImage('img', downloadImage)
+      .loadAudio('audio', clickAudio)
   }
 
   async update(delta: number) {
     this.textTimer.update(delta)
 
     if (this.input.isMouseClicked()) {
+      await AssetManager.get<HTMLAudioElement>('audio').play()
+
       this.game.setScreen('PlayScreen')
-
-      try {
-        console.log(AssetManager.assets)
-
-        await AssetManager.get<HTMLAudioElement>('click').play()
-      } catch (e) {
-        console.log(e)
-      }
     }
   }
 

@@ -1,4 +1,4 @@
-import { Game, GameConfig, Canvas } from '../../src'
+import { Game, GameConfig } from '../../engine'
 import { PlayScreen } from './playScreen'
 import { StartScreen } from './startScreen'
 import { SCREEN_HEIGHT, SCREEN_WIDTH, HEIGHT, WIDTH } from './const'

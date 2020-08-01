@@ -1,6 +1,5 @@
-import { Entity, Vector2, Circle, ShapeRenderer } from '../../src'
-import { ParticleEmitter } from '../../src'
-import { BALL_SPEED, PARTICLE_CONFIG } from './const'
+import { Entity, Vector2, Circle, ShapeRenderer, ParticleEmitter } from '../../engine'
+import { BALL_SPEED, BALL_PARTICLE_CONFIG } from './const'
 
 class Ball extends Entity {
   velocity: Vector2
@@ -17,7 +16,7 @@ class Ball extends Entity {
       radius, 'white')
 
     this.particleEmitter = new ParticleEmitter({
-      ...PARTICLE_CONFIG,
+      ...BALL_PARTICLE_CONFIG,
       x,
       y,
       xOffset: radius / 2,

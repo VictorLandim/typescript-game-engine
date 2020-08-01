@@ -1,13 +1,16 @@
 import { EventManager } from './event'
 
-abstract class Entity {
-  events: EventManager
-  id: string
+interface Interactable {
   onMouseEnter?: () => void
   onMouseLeave?: () => void
   onClick?: () => void
   onMouseDown?: () => void
   onMouseUp?: () => void
+}
+
+abstract class Entity {
+  events: EventManager
+  id: string
 
   constructor(id: string) {
     this.id = id
@@ -18,4 +21,4 @@ abstract class Entity {
   abstract draw(ctx: CanvasRenderingContext2D): void
 }
 
-export { Entity }
+export { Entity, Interactable }

@@ -1,9 +1,10 @@
 # Tiny Typescript game engine
 Project created for learning purposes with simplicity in mind.
+Bundled with parceljs.
 
 Architecture inspired by [libgdx](libgdx.info) and [phaser](https://phaser.io).
 
-Check out `examples` folder for demo games created with the engine.
+Check out `src/examples` folder for demo games created with the engine.
 
 # Features
 - Rendering and game loop

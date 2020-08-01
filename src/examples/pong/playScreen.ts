@@ -1,4 +1,4 @@
-import { Screen, randomf, Intersector, range, Game } from '../../src/index'
+import { Screen, randomf, Intersector, range, Game, AudioManager } from '../../engine'
 import { Ball } from './ball'
 import { Paddle } from './paddle'
 import {
@@ -9,10 +9,10 @@ import {
   PAD,
   POINTS_TO_WIN,
   PADDLE_SPEED,
-  PARTICLE_CONFIG,
   MAX_BALL_SPEED,
   MAX_PADDLE_SPEED,
-  TIME_TO_RESET
+  TIME_TO_RESET,
+  BALL_PARTICLE_CONFIG
 } from './const'
 
 export enum GameState {
@@ -40,30 +40,37 @@ class PlayScreen extends Screen {
   gameState = GameState.RESET
   resetTimer = 0
 
+  paddleLeft: Paddle
+  paddleRight: Paddle
+  ball: Ball
+
   constructor(id: string, game: Game) {
     super(id, game)
+  }
 
-    this.gameWidth = game.renderer.virtual_width
-    this.gameHeight = game.renderer.virtual_height
+  init() {
+    this.gameWidth = this.game.renderer.virtual_width
+    this.gameHeight = this.game.renderer.virtual_height
 
     this.serving = Math.round(Math.random())
       ? Player.LEFT
       : Player.RIGHT
 
-    const ball = new Ball(
+    this.ball = new Ball(
       'Ball',
       this.gameWidth / 2,
       this.gameHeight / 2,
       BALL_R
     )
 
-    const paddleLeft = new Paddle(
+    this.paddleLeft = new Paddle(
       'PaddleLeft',
       PAD + PADDLE_W / 2,
       this.gameHeight / 2,
       PADDLE_W, PADDLE_H
     )
-    const paddleRight = new Paddle(
+
+    this.paddleRight = new Paddle(
       'PaddleRight',
       this.gameWidth - PAD - PADDLE_W / 2,
       this.gameHeight / 2,
@@ -71,11 +78,11 @@ class PlayScreen extends Screen {
     )
 
     this
-      .addEntity(paddleLeft)
-      .addEntity(paddleRight)
-      .addEntity(ball)
+      .addEntity(this.paddleLeft)
+      .addEntity(this.paddleRight)
+      .addEntity(this.ball)
 
-    this.resetBall()
+      .resetBall()
   }
 
   drawScore(ctx: CanvasRenderingContext2D) {
@@ -103,6 +110,7 @@ class PlayScreen extends Screen {
     const numRects = Math.round(this.gameHeight / (height + gap)) + 1
 
     ctx.fillStyle = "rgba(255, 255, 255, 0.6)"
+
     range(0, numRects).forEach(i => {
       ctx.fillRect(
         this.gameWidth / 2 - width / 2,
@@ -188,12 +196,12 @@ class PlayScreen extends Screen {
   }
 
   resetBall() {
-    const ball = this.getEntity<Ball>('Ball')
+    const { ball } = this
 
     ball.bounds.position.set(this.gameWidth / 2, this.gameHeight / 2)
     ball.particleEmitter.clear()
     ball.particleEmitter.config = {
-      ...PARTICLE_CONFIG,
+      ...BALL_PARTICLE_CONFIG,
       x: ball.bounds.position.x,
       y: ball.bounds.position.y,
       xOffset: ball.bounds.radius / 2,
@@ -213,22 +221,20 @@ class PlayScreen extends Screen {
   }
 
   resetPaddles() {
-    const paddleLeft = this.getEntity<Paddle>('PaddleLeft')
-    const paddleRight = this.getEntity<Paddle>('PaddleRight')
+    const { paddleLeft, paddleRight } = this
 
-    paddleLeft.position.set(
+    paddleLeft.bounds.position.set(
       PAD + PADDLE_W / 2,
       this.gameHeight / 2,
     )
-    paddleRight.position.set(
+    paddleRight.bounds.position.set(
       this.gameWidth - PAD - PADDLE_W / 2,
       this.gameHeight / 2,
     )
   }
 
   handleInput(delta: number) {
-    const paddleLeft = this.getEntity<Paddle>('PaddleLeft')
-    const paddleRight = this.getEntity<Paddle>('PaddleRight')
+    const { paddleLeft, paddleRight } = this
 
     if (this.input.isMouseDown()) {
       this.resetBall()
@@ -240,25 +246,23 @@ class PlayScreen extends Screen {
     if (this.input.isKeyDown(this.input.keys.DOWN)) paddleRight.moveDown(delta)
 
     // bounds
-    if (paddleLeft.position.y - paddleLeft.size.y / 2 < 0) {
-      paddleLeft.position.y = paddleLeft.size.y / 2
+    if (paddleLeft.bounds.position.y - paddleLeft.bounds.size.y / 2 < 0) {
+      paddleLeft.bounds.position.y = paddleLeft.bounds.size.y / 2
     }
-    if (paddleRight.position.y - paddleRight.size.y / 2 < 0) {
-      paddleRight.position.y = paddleRight.size.y / 2
+    if (paddleRight.bounds.position.y - paddleRight.bounds.size.y / 2 < 0) {
+      paddleRight.bounds.position.y = paddleRight.bounds.size.y / 2
     }
 
-    if (paddleLeft.position.y + paddleLeft.size.y / 2 > this.gameHeight) {
-      paddleLeft.position.y = this.gameHeight - paddleLeft.size.y / 2
+    if (paddleLeft.bounds.position.y + paddleLeft.bounds.size.y / 2 > this.gameHeight) {
+      paddleLeft.bounds.position.y = this.gameHeight - paddleLeft.bounds.size.y / 2
     }
-    if (paddleRight.position.y + paddleRight.size.y / 2 > this.gameHeight) {
-      paddleRight.position.y = this.gameHeight - paddleRight.size.y / 2
+    if (paddleRight.bounds.position.y + paddleRight.bounds.size.y / 2 > this.gameHeight) {
+      paddleRight.bounds.position.y = this.gameHeight - paddleRight.bounds.size.y / 2
     }
   }
 
-  handleCollision(delta: number) {
-    const paddleLeft = this.getEntity<Paddle>('PaddleLeft')
-    const paddleRight = this.getEntity<Paddle>('PaddleRight')
-    const ball = this.getEntity<Ball>('Ball')
+  async handleCollision(delta: number) {
+    const { paddleLeft, paddleRight, ball } = this
 
     const randomAngleOffset = 0
 
@@ -266,9 +270,10 @@ class PlayScreen extends Screen {
       ball.bounds.position.y - ball.bounds.radius < 0 ||
       ball.bounds.position.y + ball.bounds.radius > this.gameHeight) {
       ball.velocity.y *= -1
+      AudioManager.play('audio')
     }
 
-    if (ball.bounds.position.y + ball.bounds.radius > paddleLeft.position.x + paddleLeft.bounds.size.y / 2) {
+    if (ball.bounds.position.y + ball.bounds.radius > paddleLeft.bounds.position.x + paddleLeft.bounds.size.y / 2) {
       // debugger
       // return
     }
@@ -280,6 +285,9 @@ class PlayScreen extends Screen {
     if (
       Intersector.rectCircle(paddleLeft.bounds, ball.bounds) ||
       Intersector.rectCircle(paddleRight.bounds, ball.bounds)) {
+
+      AudioManager.play('audio')
+
       ball.velocity.x *= -1
 
       ball.velocity.x *= ball.velocity.x >= MAX_BALL_SPEED
@@ -303,9 +311,7 @@ class PlayScreen extends Screen {
   }
 
   handlePoint(delta: number) {
-    const ball = this.getEntity<Ball>('Ball')
-    const paddleLeft = this.getEntity<Paddle>('PaddleLeft')
-    const paddleRight = this.getEntity<Paddle>('PaddleRight')
+    const { paddleLeft, paddleRight, ball } = this
 
     const OFFSET = 20
 

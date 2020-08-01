@@ -2,14 +2,15 @@
   "compilerOptions": {
     "target": "ESNext",
     "baseUrl": "./src",
+    "moduleResolution": "node",
+    "module": "CommonJS",
     "paths": {
       "~/*": [
         "./*"
-      ],
+      ]
     },
   },
   "include": [
     "src/**/*",
-    "example/**/*"
   ]
 }

@@ -32,6 +32,8 @@ class Renderer {
 
     this.canvas = document.createElement('canvas')
     this.ctx = <CanvasRenderingContext2D>this.canvas.getContext('2d')
+    this.ctx.imageSmoothingEnabled = false;
+
 
     root.style.width = `${this.screen_width}px`
     root.style.height = `${this.screen_height}px`

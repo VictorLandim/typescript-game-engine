@@ -23,7 +23,7 @@ class Game {
   renderer: Renderer
 
   protected screens: Screen[] = []
-  protected screenIndex = 0
+  protected screenIndex = -1
 
   protected lastTime: number = 0
   protected config: GameConfig
@@ -32,8 +32,6 @@ class Game {
 
   constructor(config: GameConfig = DEFAULT_CONFIG) {
     this.config = config
-    this.screens = []
-    this.screenIndex = 0
 
     this.renderer = new Renderer(
       this.config.virtualWidth,
@@ -52,15 +50,32 @@ class Game {
 
     this.fps = 1000 / delta
 
-    this.update(delta)
-    this.draw(this.renderer.ctx)
+    try {
+      this.update(delta)
+      this.draw(this.renderer.ctx)
+    } catch (e) {
+      console.log(e)
+      this.renderer.ctx.fillStyle = 'rgba(0,0,0,0.5)'
+      this.renderer.ctx.fillRect(0, 0, this.renderer.virtual_width, this.renderer.virtual_height)
+      this.renderer.ctx.fillStyle = "white"
+      this.renderer.ctx.font = "10px consolas"
+      this.renderer.ctx.fillText(JSON.stringify(e, null, 4), 10, 10, this.renderer.virtual_width - 10)
+    }
 
     // }
 
     window.requestAnimationFrame(this.loop)
   }
 
-  start = () => window.requestAnimationFrame(this.loop)
+  start = () => {
+    if (this.screens.length === 0) {
+      throw new Error('Game has no screens to show.')
+    }
+
+    this.setScreen(this.screens[0].id)
+
+    window.requestAnimationFrame(this.loop)
+  }
 
   update(delta: number) {
     this.screens[this.screenIndex]?.update(delta)
@@ -88,9 +103,10 @@ class Game {
     }
 
     this.screenIndex = foundScreenIndex
+    this.screens[this.screenIndex].init()
   }
 
-  addScreen(screen: Screen): this {
+  addScreen<T extends Screen>(screen: T): this {
     this.screens.push(screen)
     return this
   }

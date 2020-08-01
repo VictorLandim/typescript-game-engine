@@ -20,6 +20,8 @@ abstract class Screen {
     this.input = new Input(game.renderer.ctx)
   }
 
+  abstract init(): void;
+
   update(delta: number) {
     Object.keys(this.entities).forEach(key => this.entities[key].update(delta))
   }

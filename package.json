@@ -4,12 +4,15 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "pong": "rm -rf .parcel-cache && parcel examples/pong/index.html --open",
-    "asteroids": "rm -rf .parcel-cache && parcel examples/asteroids/index.html",
-    "build": "parcel build public/index.html"
+    "dev:pong": "rm -rf .parcel-cache && parcel src/examples/pong/index.html src/examples/pong/assets/** --open",
+    "build:pong": "parcel build src/examples/pong/index.html",
+    "dev:dino": "rm -rf .parcel-cache && parcel src/examples/dino/index.html src/examples/dino/assets/** --open"
   },
   "devDependencies": {
+    "@parcel/transformer-typescript-tsc": "^2.0.0-nightly.355",
+    "@parcel/validator-typescript": "^2.0.0-nightly.355",
     "parcel": "^2.0.0-beta.1",
-    "serve": "^11.3.2"
-  }
+    "typescript": "^3.9.7"
+  },
+  "dependencies": {}
 }

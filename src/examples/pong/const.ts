@@ -1,4 +1,4 @@
-import { EmitterConfig } from '../../src/particleEmitter'
+import { EmitterConfig } from '../../engine'
 
 export const DEBUG = true
 
@@ -22,7 +22,7 @@ export const POINTS_TO_WIN = 10
 
 export const TIME_TO_RESET = 500
 
-export const PARTICLE_CONFIG: EmitterConfig = {
+export const BALL_PARTICLE_CONFIG: EmitterConfig = {
   frequency: 25,
   gravity: 0,
   lifespan: 300,
@@ -35,7 +35,7 @@ export const PARTICLE_CONFIG: EmitterConfig = {
   yOffset: 0
 }
 
-export const PARTICLE_CONFIG_DEBUG: EmitterConfig = {
+export const BALL_PARTICLE_CONFIG_DEBUG: EmitterConfig = {
   frequency: 500,
   gravity: 0,
   lifespan: 2000,
